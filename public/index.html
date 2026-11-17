@@ -1,0 +1,144 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Capital Quest</title><meta name="color-scheme" content="dark">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a1a24;--ink:#e8f0f3;--mut:#8fa6b0;--brass:#e0a93b;--jade:#2bb3a0;--glass:rgba(255,255,255,.07);--line:rgba(255,255,255,.15);color-scheme:dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{background:radial-gradient(1100px 650px at 75% -10%,#18505a,transparent),radial-gradient(800px 500px at 0 100%,#2a1f4a,transparent),var(--bg);color:var(--ink);font:15px/1.45 Figtree,system-ui,sans-serif;overflow-x:hidden}
+h1,h2,h3{font-family:Unbounded,sans-serif;margin:.3em 0}h1{font-size:clamp(26px,5vw,42px)}
+.scr{display:none;padding:16px;max-width:1400px;margin:auto}.scr.on{display:block}
+.g{background:var(--glass);border:1px solid var(--line);border-radius:16px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:14px;box-shadow:0 14px 40px rgba(0,0,0,.35);margin-bottom:12px}
+button,input{font:inherit;color:var(--ink)}
+button{background:var(--brass);color:#1a1204;border:0;border-radius:10px;padding:9px 14px;font-weight:600;cursor:pointer;transition:transform .15s,filter .15s}
+button:hover:not(:disabled){filter:brightness(1.12);transform:translateY(-1px)}button:disabled{opacity:.4;cursor:default}button.s{background:var(--glass);color:var(--ink);border:1px solid var(--line)}
+input{background:rgba(0,0,0,.35);border:1px solid var(--line);border-radius:8px;padding:8px;min-width:0}:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
+.mut{color:var(--mut)}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.sp{justify-content:space-between}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:800px){.two{grid-template-columns:1fr}}
+.grid{display:grid;grid-template-columns:1fr 350px;gap:14px}@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.stage{position:relative;height:min(70vh,640px);overflow:hidden;perspective:1500px;padding:0;background:radial-gradient(circle at 50% 40%,#12485a,#071720)}
+.board{position:absolute;left:50%;top:50%;width:700px;height:700px;margin:-350px 0 0 -350px;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.3,.7,.2,1);transform:translate(var(--px,0),var(--py,0)) rotateX(var(--rx,52deg)) rotateZ(var(--rz,0deg)) scale(var(--z,1))}
+.t{position:absolute;width:100px;height:100px;padding:4px;border:1px solid rgba(255,255,255,.22);border-top:7px solid var(--rc,#456);background:linear-gradient(160deg,#17495a,#0c2530);border-radius:8px;font-size:11px;text-align:center;cursor:pointer;transform:translateZ(8px);transform-style:preserve-3d;box-shadow:0 8px 0 #05121a,0 16px 20px rgba(0,0,0,.55);display:flex;flex-direction:column;justify-content:flex-end;align-items:center;line-height:1.2}
+.t .fl{position:absolute;left:3px;top:0;font-size:14px}.t em{font-style:normal;height:13px;font-size:10px}
+.t .lm{position:absolute;left:50%;top:6px;margin-left:-16px;font-size:30px;transform-origin:50% 100%;transform:translateZ(14px) rotateZ(calc(-1*var(--rz,0deg))) rotateX(calc(-1*var(--rx,52deg)));filter:drop-shadow(0 6px 4px rgba(0,0,0,.5))}
+.t.own{box-shadow:inset 0 -8px 0 var(--o),0 8px 0 #05121a,0 16px 20px rgba(0,0,0,.55)}
+.t.set{border-color:var(--brass);animation:glow 1.8s ease-in-out infinite alternate}@keyframes glow{to{box-shadow:inset 0 -8px 0 var(--o),0 0 22px 4px var(--brass)}}
+.t .x2{position:absolute;right:2px;top:0;background:var(--brass);color:#111;border-radius:6px;padding:0 4px;font-weight:700}
+.ctr{position:absolute;left:100px;top:100px;width:500px;height:500px;border-radius:14px;background:radial-gradient(circle,rgba(255,255,255,.16) 1.5px,transparent 2px) 0 0/14px 14px,linear-gradient(#0f3a4a,#092733);display:grid;place-items:center;text-align:center;transform:translateZ(2px);border:1px solid var(--line);font:700 32px Unbounded;color:var(--brass);padding:30px}.ctr small{display:block;font:14px Figtree;color:var(--ink);margin-top:8px}
+.k{position:absolute;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:19px;border:3px solid var(--c);background:#0b1b24;transition:left .2s,top .2s;transform:translateZ(30px) rotateZ(calc(-1*var(--rz,0deg))) rotateX(calc(-1*var(--rx,52deg)));box-shadow:0 0 14px var(--c)}
+.cam{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:6px}.cam button{padding:6px 10px}
+.dice{position:absolute;left:18px;bottom:18px;display:flex;gap:22px;perspective:600px}
+.d{width:54px;height:54px;position:relative;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.2,.8,.2,1)}
+.d i{position:absolute;inset:0;background:#f6efe0;color:#1c1c1c;border-radius:10px;display:grid;place-items:center;font:normal 44px/1 system-ui;backface-visibility:hidden;border:1px solid #aaa}
+.pc{border-left:6px solid var(--c);padding:10px;margin-bottom:8px;font-size:13px}.pc.now{box-shadow:0 0 0 2px var(--c),0 14px 40px rgba(0,0,0,.4)}.pc.out{opacity:.4;text-decoration:line-through}
+#lg{margin:6px 0 0;padding:0;list-style:none;max-height:200px;overflow:auto;font-size:12px;color:var(--mut)}#lg li{padding:2px 0;border-bottom:1px solid var(--line)}
+.ov{position:fixed;inset:0;background:rgba(3,10,15,.72);display:none;place-items:center;z-index:9;padding:12px;overflow:auto}.ov.on{display:grid}
+.card{width:min(360px,100%);border-radius:18px;background:#f7f1e3;color:#1c1c1c;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.6);animation:pop .25s}@keyframes pop{from{transform:scale(.9) rotateX(20deg);opacity:0}}
+.card .hd{background:var(--sc);color:#fff;padding:12px 14px;display:flex;gap:10px;align-items:center;text-shadow:0 1px 3px rgba(0,0,0,.4)}.card .hd b{font:700 18px Unbounded}.card .hd .pr{margin-left:auto;font:700 20px Unbounded}
+.card .fl{font-size:34px}.card .lms{display:flex;justify-content:space-around;padding:10px 4px;background:rgba(0,0,0,.05)}.lms i{font-style:normal;font-size:38px;text-align:center}.lms small{display:block;font-size:11px;max-width:90px}
+.card table{width:100%;font-size:13px;margin:6px 0}.card td{padding:3px 14px}.card td+td{text-align:right}.card .bd{padding:4px 0 12px}.card .row{padding:0 14px}.card .mut{color:#555;padding:0 14px}
+.card button.s{color:#1c1c1c;border-color:#bbb}
+#ts{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:10;display:grid;gap:6px;width:min(92vw,460px)}#ts div{background:#0e2a37;border:1px solid var(--brass);border-radius:10px;padding:8px 12px}
+.ov .g{max-width:480px;width:100%}.onl button{padding:4px 10px;margin-left:6px}.code{font:700 34px Unbounded;letter-spacing:.2em;color:var(--brass)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style></head><body>
+<div id="land" class="scr on"><div class="two"><div class="g"><h1>Capital Quest</h1><p class="mut">Buy cities, build houses, complete colour sets for double rent. 2–6 players, any device.</p>
+<p><input id="name" placeholder="Your name" maxlength="12" aria-label="Your name"></p><div class="row"><button id="mk">Create room</button><input id="jc" placeholder="Room code" maxlength="4" size="6" style="text-transform:uppercase" aria-label="Room code"><button class="s" id="jn">Join</button></div>
+<p><button class="s" onclick="rules()">How to play</button></p></div>
+<div class="g"><h3>Players online</h3><div class="onl mut" id="onl0">Nobody else yet. Share the link after you create a room.</div></div></div></div>
+
+<div id="lobby" class="scr"><div class="two"><div class="g"><span class="mut">Room code</span><div class="code" id="lc"></div><div class="row"><button class="s" id="cp">Copy invite link</button><button class="s" id="lv">Leave</button></div><h3>Players</h3><div id="lp"></div>
+<div class="row" id="host"><label>Starting cash <input id="cash" type="number" min="500" step="100" style="width:90px"></label><button class="s" id="ab">+ Bot</button><button id="st">Start game</button></div><p class="mut" id="wait"></p></div>
+<div class="g"><h3>Invite someone online</h3><div class="onl" id="onl1"></div></div></div></div>
+
+<div id="game" class="scr"><div class="grid"><div>
+<div class="g row sp"><b id="hud"></b><span id="mk2" class="mut"></span></div>
+<div class="g stage" id="stg"><div class="board" id="bd"></div>
+<div class="cam"><button class="s" onclick="cam('rz',-20)" aria-label="Rotate left">⟲</button><button class="s" onclick="cam('rz',20)" aria-label="Rotate right">⟳</button><button class="s" onclick="cam('rx',8)" aria-label="Tilt up">⬍+</button><button class="s" onclick="cam('rx',-8)" aria-label="Tilt down">⬍−</button><button class="s" onclick="cam('z',.15)" aria-label="Zoom in">＋</button><button class="s" onclick="cam('z',-.15)" aria-label="Zoom out">－</button><button class="s" onclick="cam('f')" aria-label="Follow">🎥</button></div>
+<div class="dice"><div class="d" id="d1"></div><div class="d" id="d2"></div></div></div>
+<div class="g row"><button id="rollB">🎲 Roll dice</button><button id="endB" class="s">End turn</button><button class="s" id="muB">🔊</button><button class="s" onclick="rules()">❓ Rules</button><button class="s" id="qB">Leave</button></div><div id="adv" class="mut"></div></div>
+<div><div id="dash"></div><div class="g"><b>Transactions</b><ul id="lg"></ul></div></div></div></div>
+<div id="ov" class="ov"><div id="pop"></div></div><div id="ts"></div>
+
+<script>
+const $=s=>document.querySelector(s),sleep=ms=>new Promise(r=>setTimeout(r,ms)),E=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';');
+let ws,C=[],SC=[],TI=[],G=null,me=-1,disp={},built=0,lastSeq=-1,lastLc=-1,info=null,aucEnd=0,Qc=Promise.resolve(),dk=0,mute=0,AC,cm={rx:52,rz:0,z:1,f:1},pend=null,inRoom=0;
+const tok=localStorage.cqTok||(localStorage.cqTok=Math.random().toString(36).slice(2)+Date.now());
+const cx=i=>TI.indexOf(i),xy=i=>i<=6?[i,0]:i<=12?[6,i-6]:i<=18?[18-i,6]:[0,24-i],MUL=[1,3,6,10,15],SN=['Rust','Sky','Rose','Amber','Crimson','Gold'];
+const send=o=>ws&&ws.readyState==1&&ws.send(JSON.stringify(o)),nameV=()=>($('#name').value.trim()||localStorage.cqName||'Guest');
+function sfx(f=440,d=.1){if(mute)return;try{AC=AC||new AudioContext();const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=f;g.gain.value=.05;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);o.stop(AC.currentTime+d)}catch(e){}}
+function toast(m){const d=document.createElement('div');d.textContent=m;$('#ts').append(d);setTimeout(()=>d.remove(),3500)}
+function show(id){document.querySelectorAll('.scr').forEach(e=>e.classList.toggle('on',e.id==id));if(id=='game')camApply()}
+function popup(h){$('#pop').innerHTML=h;$('#ov').classList.add('on')}function closePop(){info=null;$('#ov').classList.remove('on');if(G&&G.phase!='lobby')render()}
+$('#ov').onclick=e=>{if(e.target.id=='ov'&&!(G&&['buy','auction','over'].includes(G.phase)))closePop()};
+function rules(){info='rules';popup(`<div class="g"><h3>How to play</h3><p>Roll, move clockwise, buy cities. Unowned city you decline goes to a live auction. Pass Start: +$150.</p><p><b>Colour sets:</b> own all 3 cities of one colour and rent is <b>doubled</b> (set glows gold, ×2 badge).</p><p><b>Houses:</b> on a complete set you can build up to 4 houses per city, evenly across the set, on your own turn. Rent ×3, ×6, ×10, ×15. Selling a house returns 50%.</p><p>Tax tiles, cards and market events change cash and rents. If you cannot pay, houses then cities are sold at 50%; still short means bankrupt. Last player standing wins, or the richest after 30 rounds.</p><button onclick="closePop()">Got it</button></div>`)}
+
+/* connection */
+function conn(){ws=new WebSocket(location.origin.replace(/^http/,'ws'));ws.onopen=()=>send({a:'hello',name:nameV(),tok});ws.onmessage=e=>on(JSON.parse(e.data));ws.onclose=()=>{toast('Reconnecting…');setTimeout(conn,1500)}}
+function on(m){if(m.t=='hi'){C=m.C;SC=m.SC;TI=m.TI}
+ else if(m.t=='online'){const h=(inRoom)=>m.l.filter(x=>x.name!=nameV()||x.busy!=null).map(x=>`<div class="row sp">${E(x.name)} <span class="mut">${x.busy?'in a game':'free'}</span>${inRoom&&!x.busy?`<button onclick="send({a:'invite',to:'${x.id}'})">Invite</button>`:''}</div>`).join('')||'Nobody else yet.';$('#onl0').innerHTML=h(0);$('#onl1').innerHTML=h(1)}
+ else if(m.t=='invite'){popup(`<div class="g"><h3>Game invitation</h3><p><b>${E(m.from)}</b> invites you to room <b>${m.code}</b>.</p><div class="row"><button id="ya">Join</button><button class="s" id="no">Decline</button></div></div>`);$('#ya').onclick=()=>{closePop();send({a:'hello',name:nameV(),tok});send({a:'join',code:m.code})};$('#no').onclick=()=>{closePop();send({a:'decline',from:m.from})};sfx(700)}
+ else if(m.t=='err')toast(m.m);else if(m.t=='joined'){inRoom=1;history.replaceState(0,'','?room='+m.code)}
+ else if(m.t=='state'){me=m.s.you;Qc=Qc.then(()=>apply(m.s))}}
+$('#name').value=localStorage.cqName||'';
+const go=a=>{localStorage.cqName=nameV();send({a:'hello',name:nameV(),tok});send(a)};
+$('#mk').onclick=()=>go({a:'create'});$('#jn').onclick=()=>go({a:'join',code:$('#jc').value.trim()});
+const q=new URLSearchParams(location.search).get('room');if(q)$('#jc').value=q.toUpperCase();
+$('#cp').onclick=()=>navigator.clipboard.writeText(location.origin+'/?room='+G.code).then(()=>toast('Invite link copied'));
+$('#lv').onclick=$('#qB').onclick=()=>{send({a:'leave'});G=null;built=0;inRoom=0;$('#bd').innerHTML='';history.replaceState(0,'','/');show('land')};
+$('#ab').onclick=()=>send({a:'bot'});$('#st').onclick=()=>send({a:'start'});$('#cash').onchange=e=>send({a:'cash',v:e.target.value});
+$('#rollB').onclick=()=>send({a:'roll'});$('#endB').onclick=()=>send({a:'end'});$('#muB').onclick=e=>{mute=!mute;e.target.textContent=mute?'🔇':'🔊'};
+
+/* lobby + game state */
+function lobby(s){show('lobby');$('#lc').textContent=s.code;const host=s.host==me;
+ $('#lp').innerHTML=s.players.map((p,k)=>`<div class="row sp pc" style="--c:${p.col}"><span>${p.av} ${E(p.name)}${p.bot?' 🤖':''}${p.id==s.host?' (host)':''}</span>${host&&p.id!=me?`<button class="s" onclick="send({a:'kick',k:${k}})">Remove</button>`:''}</div>`).join('');
+ $('#host').style.display=host?'':'none';$('#cash').value=s.cash0;$('#st').disabled=s.players.length<2;$('#wait').textContent=host?'Add bots or invite friends, then start.':'Waiting for the host to start…'}
+async function apply(s){const first=!G;G=s;if(s.phase=='lobby')return lobby(s);
+ if(!built)build();show('game');if(first||!Object.keys(disp).length)s.players.forEach(p=>disp[p.id]=p.pos);
+ if(s.dice&&s.dice.seq!=lastSeq){const f=lastSeq>=0;lastSeq=s.dice.seq;if(f)await rollAnim(s.dice)}
+ for(const p of s.players){let n=0;while(disp[p.id]!=p.pos&&n++<24){disp[p.id]=(disp[p.id]+1)%24;tokens();sfx(380+n*15,.06);await sleep(200)}}
+ if(s.auc)aucEnd=Date.now()+s.auc.left;render()}
+function build(){built=1;lastSeq=-1;lastLc=-1;const b=$('#bd');b.innerHTML='<div class="ctr"><div>CAPITAL QUEST<small id="ctrt"></small></div></div>';
+ const sp={0:['🏁','Start','+$150'],6:['⚓','Free Port',''],9:['🎴','Opportunity',''],12:['🎴','Opportunity',''],18:['🧾','Tax Audit','10%'],21:['💸','Luxury Tax','$75']};
+ for(let i=0;i<24;i++){const[x,y]=xy(i),e=document.createElement('div');e.className='t';e.id='t'+i;e.style.left=x*100+'px';e.style.top=y*100+'px';
+  if(cx(i)>=0){const c=C[cx(i)];e.style.setProperty('--rc',SC[c[4]]);e.innerHTML=`<span class="fl">${c[2]}</span><span class="lm">${c[7][0].split(' ')[0]}</span><span class="x2" hidden>×2</span><b>${c[0]}</b><small>$${c[3]}</small><em id="h${i}"></em>`;e.onclick=()=>{info=i;render()}}
+  else{const s=sp[i];e.style.justifyContent='center';e.innerHTML=`<span style="font-size:26px">${s[0]}</span><b>${s[1]}</b><small>${s[2]}</small>`}b.append(e)}
+ ['d1','d2'].forEach(id=>$('#'+id).innerHTML=['','rotateY(90deg)','rotateX(-90deg)','rotateX(90deg)','rotateY(-90deg)','rotateY(180deg)'].map((t,k)=>`<i style="transform:${t} translateZ(27px)">${'⚀⚁⚂⚃⚄⚅'[k]}</i>`).join(''))}
+async function rollAnim(d){const F={1:[0,0],2:[0,-90],3:[90,0],4:[-90,0],5:[0,90],6:[0,180]};dk++;[d.a,d.b].forEach((v,j)=>{const[a,b]=F[v];$('#d'+(j+1)).style.transform=`rotateX(${a+720*dk}deg) rotateY(${b+720*dk}deg)`});sfx(300);await sleep(1050)}
+function tokens(){G.players.forEach(p=>{let k=$('#k'+p.id);if(!k){k=document.createElement('div');k.id='k'+p.id;k.className='k';k.textContent=p.av;k.style.setProperty('--c',p.col);$('#bd').append(k)}
+ const[x,y]=xy(disp[p.id]??p.pos);k.style.left=x*100+8+(p.id%3)*28+'px';k.style.top=y*100+24+(p.id>2?30:0)+'px';k.style.display=p.alive?'':'none'});camApply()}
+function cam(k,v){if(k=='f')cm.f=!cm.f;else if(k=='z')cm.z=Math.min(1.6,Math.max(.5,cm.z+v));else if(k=='rx')cm.rx=Math.min(75,Math.max(20,cm.rx+v));else cm.rz+=v;camApply()}
+function camApply(){if(!G||!built)return;const W=$('#stg').clientWidth,z=cm.z*Math.min(1.1,(W-10)/760)*(cm.f?1.25:1);let px=0,py=0;
+ if(cm.f&&G.cur!=null){const[x,y]=xy(disp[G.cur]??0),tx=x*100-300,t2=y*100-300,a=cm.rz*Math.PI/180;px=-(tx*Math.cos(a)-t2*Math.sin(a))*z;py=-(tx*Math.sin(a)+t2*Math.cos(a))*Math.cos(cm.rx*Math.PI/180)*z}
+ [['rx',cm.rx+'deg'],['rz',cm.rz+'deg'],['z',z],['px',px+'px'],['py',py+'px']].forEach(([k,v])=>$('#bd').style.setProperty('--'+k,v))}
+addEventListener('resize',camApply);
+
+/* property card */
+function card(i,mode){const c=C[cx(i)],t=G.T[i],ow=t.o!=null?G.players.find(p=>p.id==t.o):null,base=Math.round(c[3]*.12),mineTurn=G.cur==me&&(G.phase=='roll'||G.phase=='act');
+ return `<div class="card" style="--sc:${SC[c[4]]}"><div class="hd"><span class="fl">${c[2]}</span><div><b>${c[0]}</b><div style="font-size:12px">${c[1]} · ${SN[c[4]]} set</div></div><span class="pr">$${t.p}</span></div>
+ <div class="lms">${c[7].map(l=>{const[e,...n]=l.split(' ');return`<i>${e}<small>${n.join(' ')}</small></i>`}).join('')}</div>
+ <div class="bd"><table>${MUL.map((m,h)=>`<tr${h==t.h?' style="font-weight:700;background:#0001"':''}><td>${h?h+' house'+(h>1?'s':''):'Rent'}</td><td>$${base*m}</td></tr>`).join('')}<tr><td>Full set bonus</td><td>×2 rent</td></tr><tr><td>House cost</td><td>$${Math.round(c[3]*.5/5)*5}</td></tr></table>
+ <p class="mut">≈ ${c[5]}${Math.round(t.p*c[6])} local · ${ow?`Owner ${ow.av} ${E(ow.name)}${t.f?' · <b>Set complete: rent ×2</b>':''} · rent now $${t.r}`:'Unowned'}</p>
+ <div class="row" style="margin-top:8px">${mode=='buy'?(G.cur==me?`<button ${G.players.find(p=>p.id==me).cash<t.p?'disabled':''} onclick="send({a:'buy'})">Buy $${t.p}</button><button class="s" onclick="send({a:'pass'})">Auction</button>`:`<span class="mut">Waiting for ${E(G.players.find(p=>p.id==G.cur).name)}…</span>`):
+ mode=='auc'?`<span id="cd" class="mut"></span><b>Bid $${G.auc.hi}${G.auc.w!=null?' · '+E(G.players.find(p=>p.id==G.auc.w).name):''}</b>${G.auc.skip==me?'<span class="mut">You declined; others bid</span>':`<button onclick="send({a:'bid',amt:${G.auc.hi+10}})">+$10</button><button onclick="send({a:'bid',amt:${G.auc.hi+50}})">+$50</button>`}`:
+ `${t.o==me&&mineTurn?`<button ${t.b?'':'disabled'} onclick="send({a:'build',i:${i}})">🏠 Build</button><button class="s" ${t.s?'':'disabled'} onclick="send({a:'sell',i:${i}})">Sell house</button>`:''}<button class="s" onclick="closePop()">Close</button>`}</div>
+ ${t.o==me&&!t.f&&mode=='info'?'<p class="mut">Own all 3 '+SN[c[4]]+' cities to build houses and double rent.</p>':''}</div></div>`}
+
+function render(){if(!G||G.phase=='lobby')return;const s=G;
+ TI.forEach(i=>{const e=$('#t'+i),t=s.T[i];e.classList.toggle('own',t.o!=null);e.classList.toggle('set',t.f);e.querySelector('.x2').hidden=!t.f;if(t.o!=null)e.style.setProperty('--o',s.players.find(p=>p.id==t.o).col);$('#h'+i).textContent=t.h?'🏠'.repeat(t.h):''});
+ tokens();const cp=s.players.find(p=>p.id==s.cur),mp=s.players.find(p=>p.id==me);
+ $('#dash').innerHTML=[...s.players].sort((a,b)=>b.alive-a.alive||b.nw-a.nw).map((p,k)=>{const m=TI.filter(i=>s.T[i].o==p.id),sets=[...new Set(m.filter(i=>s.T[i].f).map(i=>C[cx(i)][4]))];
+  return `<div class="g pc ${p.id==s.cur?'now':''} ${p.alive?'':'out'}" style="--c:${p.col}"><div class="row sp"><b>${p.av} ${E(p.name)}${p.id==me?' (you)':''}${p.bot?' 🤖':''}${p.off?' ⚠ offline':''}</b><span>${p.alive?'#'+(k+1):'Out'}</span></div>
+  <div class="row sp"><span>💰 $${p.cash}</span><span>Net worth $${p.nw}</span></div><div class="mut">${m.map(i=>`<span style="color:${SC[C[cx(i)][4]]}">■</span>${C[cx(i)][2]}${s.T[i].h?'🏠'+s.T[i].h:''}`).join(' ')||'No cities'}${sets.length?'<br>⭐ Set complete: '+sets.map(x=>SN[x]).join(', ')+' (×2 rent)':''}<br>Income $${p.got} · Expenses $${p.paid}</div></div>`}).join('');
+ $('#lg').innerHTML=s.log.map(l=>`<li>${E(l)}</li>`).join('');
+ if(lastLc>=0&&s.lc>lastLc)s.log.slice(0,Math.min(3,s.lc-lastLc)).reverse().forEach(l=>toast(l));lastLc=s.lc;
+ $('#hud').textContent=`Round ${Math.min(s.round,s.max)}/${s.max} · ${cp?cp.av+' '+cp.name+"'s turn":''}`;$('#mk2').textContent=`🌐 ${s.evt} · prices ×${s.pm.toFixed(2)}`;$('#ctrt').textContent=s.evt;
+ $('#rollB').disabled=!(s.cur==me&&s.phase=='roll');$('#endB').disabled=!(s.cur==me&&s.phase=='act');
+ $('#adv').textContent=s.cur==me&&s.phase!='over'?advise():'';
+ if(s.phase=='over'){const w=s.players.find(p=>p.id==s.winner);popup(`<div class="g"><h3>🏆 ${w.av} ${E(w.name)} wins!</h3><table style="width:100%">${[...s.players].sort((a,b)=>b.nw-a.nw).map(p=>`<tr><td>${p.av} ${E(p.name)}</td><td>$${p.nw}</td><td class="mut">income $${p.got}</td><td class="mut">${p.bought} bought</td></tr>`).join('')}</table><p><button onclick="$('#qB').click();closePop()">Back to menu</button></p></div>`);return}
+ if(s.phase=='buy'){info=null;popup(card(cp.pos,'buy'))}
+ else if(s.phase=='auction'){popup(card(s.auc.i,'auc'));tickCd()}
+ else if(typeof info=='number')popup(card(info,'info'));else if(info!='rules')$('#ov').classList.remove('on')}
+function tickCd(){const e=$('#cd');if(e&&G&&G.phase=='auction'){e.textContent=Math.max(0,Math.ceil((aucEnd-Date.now())/1000))+'s';setTimeout(tickCd,250)}}
+function advise(){const s=G,L=[],mp=s.players.find(p=>p.id==me),b=TI.find(i=>s.T[i].o==me&&s.T[i].b);if(mp.cash<150)L.push('Low cash: keep a buffer for rent.');if(b!=null)L.push(`Build a house in ${C[cx(b)][0]}: more rent per dollar.`);
+ SC.forEach((_,k)=>{const t=TI.filter(i=>C[cx(i)][4]==k),n=t.filter(i=>s.T[i].o==me).length;if(n==2&&t.some(i=>s.T[i].o==null))L.push(`One more ${SN[k]} city doubles your rent there.`)});return '💡 '+(L.slice(0,3).join(' ')||'Collect cities of one colour, then build houses.')}
+conn();
+</script></body></html>

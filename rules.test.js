@@ -1,0 +1,11 @@
+const a=require('assert'),S=require('./server.js');
+const mk=()=>{const P=[0,1].map(id=>({id,name:'P'+id,cash:1500,alive:true,paid:0,got:0,bought:0,pos:0,turns:0,ws:null}));return{players:P,own:{},h:{},rm:[1,1,1,1,1,1],pm:1,log:[],lc:0,cur:0,phase:'act',round:1,max:30,ds:0}};
+let r=mk();const p=r.players[0];
+r.own[1]=0;a.equal(S.rent(r,1),7,'base rent');
+r.own[3]=0;a.equal(S.rent(r,1),7,'2/3 no double');
+r.own[7]=0;a.ok(S.full(r,1));a.equal(S.rent(r,1),14,'full set doubles');
+a.ok(S.canBuild(r,1,p));r.h[1]=1;a.ok(!S.canBuild(r,1,p),'even build blocks 2nd house');a.ok(S.canBuild(r,3,p));
+a.equal(S.rent(r,1),Math.round(60*.12*3*2),'1 house + double');
+r.h[3]=1;r.h[7]=1;r.h[1]=2;a.ok(!S.canSell(r,3),'even sell');a.ok(S.canSell(r,1));
+S.pay(r,r.players[1],5000,p,'test');a.ok(!r.players[1].alive,'bankrupt');a.equal(p.cash,3000);
+console.log('rules ok');process.exit();
